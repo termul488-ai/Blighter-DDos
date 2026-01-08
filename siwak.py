@@ -21,8 +21,8 @@ def deny():
 #So I dont have to have the same stuff twice
 def printhelp():
 	print("SNMP Amplification DOS Attack")
-	print("Usage snmpdos.py <target ip> <snmpserver list> <number of threads>")
-	print("ex: ex: snmpdos.py 1.2.3.4 file.txt 10")
+	print("Usage siwak.py <target ip> <snmpserver list> <number of threads>")
+	print("ex: ex: siwak.py 1.2.3.4 file.txt 10")
 	print("SNMP serverlist file should contain one IP per line")
 	print("MAKE SURE YOUR THREAD COUNT IS LESS THAN OR EQUAL TO YOUR NUMBER OF SERVERS")
 	exit(0)
