@@ -174,7 +174,7 @@ class MonitorThread(threading.Thread):
 			if (previous+100<request_counter) & (previous.request_counter):
 				previous=request_counter
 			if flag==2:
-				print ''
+				print('')
 
 #DIE_v8 Mod By Duong Thành
 def randomIp():
