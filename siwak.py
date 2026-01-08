@@ -13,7 +13,7 @@ import optparse
 import os
 import urlparse
 
-#Hulk Mod By JokerLjnk
+#...
 url=''
 host=''
 headers_useragents=[]
