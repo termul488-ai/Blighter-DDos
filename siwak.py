@@ -31,7 +31,7 @@ else:  # Unix/Linux/Mac
     os.system("clear")
 attemps = 0
 print("""
-                                                                               
+\033[33m                                                                               
 ╔═════════════════════════════════════════════════════════════════╗
 ║\033[33m                ~ H U D A I R U L  A L - A Q S H A ~             \033[31m║
 ║\033[32m                    I N T E R N A L  S C R I P T                 \033[31m║
@@ -51,7 +51,7 @@ while attemps < 100:
         attemps += 1
         continue
 
-ask = fade.pinkred():
+ask = fade.pinkred()
 url = input("\033[48;5;7m═⟩⟩ URL:\033[0m \033[32m\033[0m" (ask))
 print("\033[32mLoading......")
 
