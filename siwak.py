@@ -39,7 +39,6 @@ while attemps < 100:
 ask = fade.pinkred("\033[48;5;4m═⟩⟩ Enter URL (http://example.com:\033[0m \033[32m\033[0m")
 url = input(ask)
 
-url = input("
 ask = fade.pinkred('txt')
 print("\033[32mLoading......")
 
