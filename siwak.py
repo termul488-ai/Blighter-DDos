@@ -34,7 +34,7 @@ def check_socks5_proxy(proxy, test_url="http://httpbin.org/ip", timeout=5):
     except Exception as e:
         # Restoring the default socket in case of an error
         socks.set_default_proxy()
-        print(f " Proxy error {proxy}: {str(e)[:50]}...")
+        print(f" Proxy error {proxy}: {str(e)[:50]}...")
         return None
 
 def extract_socks5_from_text(text):
