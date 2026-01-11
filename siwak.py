@@ -40,7 +40,7 @@ print("\033[32mLoading......")
 
 async def increment_view_count(session):
     try: 
-    async with session.get(url) as response:
+        async with session.get(url) as response:
             if response.status == 200:
                 time.sleep(0.01)
                 print("\033[48;5;2mInfo target \033[0m \033[33m" +str(url)+ " \033[35work\033[0m")
