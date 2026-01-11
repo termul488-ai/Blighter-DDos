@@ -3,6 +3,7 @@
 import os
 import sys
 import time
+import fade
 import asyncio
 import aiohttp
 
@@ -65,7 +66,7 @@ async def increment_view_count(session):
                 print("\033[48;5;3mInfo target \033[0m \033[33m" +str(view_count)+ " \033[35work\033[0m")
     except aiohttp.ClientError as e:
         time.out(0.02)
-            print("\033[33m" +str(url)+ "  \033[37mMaybe down!\033[0m")
+        print("\033[33m" +str(url)+ "  \033[37mMaybe down!\033[0m")
 
 async def main():
     connector = aiohttp.TCPConnector(limit=None)  # Enable connection pooling
