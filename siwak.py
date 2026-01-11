@@ -17,11 +17,11 @@ class SockFlood:
 attemps = 0
 def display_header():
     header_lines = [
-	╔══════╗	
-	██████  ║
-    ╚══════╝
+       Fore.YELLOW + "	╔══════╗	
+       Fore.YELLOW + "	██████  ║
+       Fore.YELLOW + "   ╚══════╝
 
-  ]
+      ]
 for line in header_lines:
     print(line)
     print(f"{Fore.WHITE}{Style.BRIGHT}{' ' * 57}v.1.0")
