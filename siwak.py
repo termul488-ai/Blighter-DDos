@@ -60,14 +60,14 @@ async def increment_view_count(session):
     try:
         async with session.get(url) as response:
             if response.status == 200:
-                time.sleep(2)
+                time.sleep(1)
                 print("\033[48;5;3mInfo target \033[0m \033[33m" +str(url)+ " \033[35work\033[0m")
             else:
-                time.sleep(2)
+                time.sleep(1)
                 print("\033[48;5;3mInfo target \033[0m \033[33m" +str(view_count)+ " \033[35work\033[0m")
     except aiohttp.ClientError as e:
-        time.sleep(2)
-        print("\033[33m" +str(url)+ "  \033[37mMaybe down!\033[0m")
+        time.sleep(1)
+        print("\033[48;5;3mInfo target \033[0m +str(url)+ "  \033[37mMaybe down!\033[0m")
 
 async def main():
     connector = aiohttp.TCPConnector(limit=None)  # Enable connection pooling
