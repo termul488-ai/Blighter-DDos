@@ -28,7 +28,7 @@ def check_socks5_proxy(proxy, test_url="http://httpbin.org/ip", timeout=5):
             print(f" Working proxy: {proxy} (response time: {response_time}мс)")
             return proxy
         else:
-            print(f " Not working proxy: {proxy} (статус: {response.status_code})")
+            print(f" Not working proxy: {proxy} (статус: {response.status_code})")
             return None
             
     except Exception as e:
