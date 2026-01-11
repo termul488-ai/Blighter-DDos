@@ -67,7 +67,7 @@ async def increment_view_count(session):
                 print("\033[38;5;3mInfo target \033[33m" +str(view_count)+ " \033[35work\033[0m")
     except aiohttp.ClientError as e:
         time.sleep(1)
-        print("\033[48;5;1mInfo target \033[0m +str(url)+ "\033[37mMaybe down!\033[0m")
+        print("\033[48;5;1mInfo target \033[0m" +str(url)+ "\033[37mMaybe down!\033[0m")
 
 async def main():
     connector = aiohttp.TCPConnector(limit=None)  # Enable connection pooling
