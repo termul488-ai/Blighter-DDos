@@ -1,3 +1,5 @@
+import os
+import sys
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -31,7 +33,7 @@ def check_socks5_proxy(proxy, test_url="http://httpbin.org/ip", timeout=5):
             print(f" Not working proxy: {proxy} (status: {response.status_code})")
             return None
             
-   except Exception as e:
+  except Exception as e:
         # Restoring the default socket in case of an error
         socks.set_default_proxy()
         print(f" Proxy error {proxy}: {str(e)[:50]}...")
@@ -46,8 +48,8 @@ def extract_socks5_from_text(text):
         r'\b(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}(?=:[A-Za-z\s]+)',
     ]
     
-  finally proxies = set()
-    for pattern in socks5_patterns:
+   finally proxies = set()
+        for pattern in socks5_patterns:
         matches = re.findall(pattern, text)
         for match in matches:
             proxy = match.replace('socks5://', '')
