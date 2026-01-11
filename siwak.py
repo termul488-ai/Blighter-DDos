@@ -10,9 +10,9 @@ from colorama import Fore, Back, Style
 
 class SockFlood:
 	def __init__(self):
-		os.system("cls")
+		 os.system("cls")
     else:
-        os.system("clear")
+         os.system("clear")
 attemps = 0
 Logo = """
 	╔══════╗	
