@@ -11,19 +11,23 @@ from colorama import Fore, Style, init
 # Initialize Colorama for colored output
 init(autoreset=True)
 
+# Define the function for Ishto DoS Tool
+def siwak_dos_tool():
+    global reqs
 
     # Define headers for HTTP requests
     headers = {
         "User-Agent": user_agent.generate_user_agent()
     }
 
+    # Clear screen based on the operating system
+    osystem = sys.platform
+    if osystem == "linux":
+        os.system("clear")
+    else:
+        os.system("cls")
 
 
-def clear():
-    os.system("cls" if os.name == "nt" else "clear")
-    
-
-os.system("clear")
 logo = """
 
   ██╗ ████╗    ██╗       ██████╗  ████╗    ██╗ ███████╗
