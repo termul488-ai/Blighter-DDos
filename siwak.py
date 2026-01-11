@@ -48,7 +48,7 @@ def extract_socks5_from_text(text):
         r'\b(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}(?=:[A-Za-z\s]+)',
     ]
     
-    finally proxies = set():
+    finally proxies = 'set'()
         for pattern in socks5_patterns:
         matches = re.findall(pattern, text)
         for match in matches:
