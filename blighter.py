@@ -23,10 +23,10 @@ def display_header():
 ]
 
 for line in header_lines:
-    print(line)
-    print(f"{Fore.WHITE}{Style.BRIGHT}{' ' * 57}v.1.0")
-    print(f"{Fore.CYAN}{Style.BRIGHT}{' ' * 16}https://kunkaffa@gmail.com")
-    print(f"{Fore.CYAN}|{'=' * 74}|")
+print(line)
+print(f"{Fore.WHITE}{Style.BRIGHT}{' ' * 57}v.1.0")
+print(f"{Fore.CYAN}{Style.BRIGHT}{' ' * 16}https://kunkaffa@gmail.com")
+print(f"{Fore.CYAN}|{'=' * 74}|")
 
 while attemps < 100:
     username = input("\033[32mEnter your username: \033[0m")
