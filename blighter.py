@@ -22,8 +22,8 @@ def display_header():
        Fore.YELLOW + "   ╚══════╝",
 ]
 
-for line in header_lines:
-print(line)
+    for line in header_lines:
+    print(line)
 print(f"{Fore.WHITE}{Style.BRIGHT}{' ' * 57}v.1.0")
 print(f"{Fore.CYAN}{Style.BRIGHT}{' ' * 16}https://kunkaffa@gmail.com")
 print(f"{Fore.CYAN}|{'=' * 74}|")
